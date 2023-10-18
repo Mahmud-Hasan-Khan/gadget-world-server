@@ -35,6 +35,18 @@ async function run() {
             res.send(result);
         })
 
+        // get only Google Products
+        app.get('/googleProducts', async (req, res) => {
+            const result = await productsCollections.find({ brand: "Google" }).toArray();
+            res.send(result);
+        });
+
+        // get only Apple Products
+        app.get('/appleProducts', async (req, res) => {
+            const result = await productsCollections.find({ brand: "Apple" }).toArray();
+            res.send(result);
+        });
+
         // cerate API for products
         app.post('/products', async (req, res) => {
             const product = req.body;
