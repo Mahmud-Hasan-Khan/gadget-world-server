@@ -29,6 +29,12 @@ async function run() {
         // create mongoDB database for Products
         const productsCollections = client.db("productsDB").collection("products");
 
+        // get API for products
+        app.get('/products', async (req, res) => {
+            const result = await productsCollections.find().toArray();
+            res.send(result);
+        })
+
         // cerate API for products
         app.post('/products', async (req, res) => {
             const product = req.body;
