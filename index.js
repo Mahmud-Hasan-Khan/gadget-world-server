@@ -29,6 +29,15 @@ async function run() {
         // create mongoDB database for Products
         const productsCollections = client.db("productsDB").collection("products");
 
+        // create mongoDB database for Products
+        const brandCollections = client.db("productsDB").collection("brands");
+
+        // gel all brands 
+        app.get('/brands', async (req, res) => {
+            const result = await brandCollections.find().toArray();
+            res.send(result);
+        })
+
         // get API for products
         app.get('/products', async (req, res) => {
             const result = await productsCollections.find().toArray();
