@@ -3,7 +3,7 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 // middleware 
 app.use(cors());
@@ -38,11 +38,22 @@ async function run() {
             res.send(result);
         })
 
-        // get API for products
-        app.get('/products', async (req, res) => {
-            const result = await productsCollections.find().toArray();
+        // get single products id wise
+        app.get('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await productsCollections.findOne(query);
             res.send(result);
         })
+
+        // Update the /products route in your back-end
+        app.get('/products', async (req, res) => {
+            const brand = req.query.brand; // Get the brand from the query parameter
+            const query = brand ? { brand } : {}; // Create a query to filter by brand if it exists
+
+            const result = await productsCollections.find(query).toArray();
+            res.send(result);
+        });
 
         // get only Google Products
         app.get('/googleProducts', async (req, res) => {
