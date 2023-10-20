@@ -36,19 +36,11 @@ async function run() {
         const cartCollections = client.db("productsDB").collection("carts");
 
         //--------------Start------------------- get API ------------------------------
-        // gel all brands 
+        // get all brands 
         app.get('/brands', async (req, res) => {
             const result = await brandCollections.find().toArray();
             res.send(result);
-        })
-
-        // get single products id wise
-        app.get('/products/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: new ObjectId(id) };
-            const result = await productsCollections.findOne(query);
-            res.send(result);
-        })
+        });
 
         // get all products filtering by brand
         app.get('/products', async (req, res) => {
@@ -59,11 +51,26 @@ async function run() {
             res.send(result);
         });
 
+        // get single products id wise
+        app.get('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await productsCollections.findOne(query);
+            res.send(result);
+        });
+
         // get cart
         app.get('/carts', async (req, res) => {
             const result = await cartCollections.find().toArray();
             res.send(result);
-        })
+        });
+
+        app.get('/carts/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await cartCollections.findOne(query);
+            res.send(result);
+        });
 
         // get only Google Products
         app.get('/googleProducts', async (req, res) => {
@@ -87,13 +94,13 @@ async function run() {
             // Insert the defined document into the "productsCollections"
             const result = await productsCollections.insertOne(product);
             res.send(result);
-        })
+        });
 
         app.post('/carts', async (req, res) => {
             const cart = req.body;
             const result = await cartCollections.insertOne(cart);
             res.send(result);
-        })
+        });
         //--------------End------------------- POST API ------------------------------
 
         // update api data for product
@@ -114,7 +121,15 @@ async function run() {
             }
             const result = await productsCollections.updateOne(filter, newUpdatedProduct, options);
             res.send(result);
-        })
+        });
+
+        // delete cart api
+        app.delete('/carts/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await cartCollections.deleteOne(query);
+            res.send(result);
+        });
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
