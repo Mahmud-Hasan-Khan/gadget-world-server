@@ -59,11 +59,14 @@ async function run() {
             res.send(result);
         });
 
-        // get cart
+        // get cart filtering by email
         app.get('/carts', async (req, res) => {
-            const result = await cartCollections.find().toArray();
+            const { email } = req.query;
+            const query = { email };
+            const result = await cartCollections.find(query).toArray();
             res.send(result);
         });
+
 
         app.get('/carts/:id', async (req, res) => {
             const id = req.params.id;
