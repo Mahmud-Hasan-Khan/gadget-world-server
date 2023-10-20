@@ -27,11 +27,15 @@ async function run() {
         await client.connect();
 
         // create mongoDB database for Products
-        const productsCollections = client.db("productsDB").collection("products");
-
-        // create mongoDB database for Products
         const brandCollections = client.db("productsDB").collection("brands");
 
+        // create mongoDB database for Products
+        const productsCollections = client.db("productsDB").collection("products");
+
+        // create mongoDB database for My Cart
+        const cartCollections = client.db("productsDB").collection("carts");
+
+        //--------------Start------------------- get API ------------------------------
         // gel all brands 
         app.get('/brands', async (req, res) => {
             const result = await brandCollections.find().toArray();
@@ -46,7 +50,7 @@ async function run() {
             res.send(result);
         })
 
-        // Update the /products route in your back-end
+        // get all products filtering by brand
         app.get('/products', async (req, res) => {
             const brand = req.query.brand; // Get the brand from the query parameter
             const query = brand ? { brand } : {}; // Create a query to filter by brand if it exists
@@ -54,6 +58,12 @@ async function run() {
             const result = await productsCollections.find(query).toArray();
             res.send(result);
         });
+
+        // get cart
+        app.get('/carts', async (req, res) => {
+            const result = await cartCollections.find().toArray();
+            res.send(result);
+        })
 
         // get only Google Products
         app.get('/googleProducts', async (req, res) => {
@@ -66,7 +76,10 @@ async function run() {
             const result = await productsCollections.find({ brand: "Apple" }).toArray();
             res.send(result);
         });
+        //--------------end------------------- get API ------------------------------
 
+
+        //--------------Start------------------- POST API ------------------------------
         // cerate API for products
         app.post('/products', async (req, res) => {
             const product = req.body;
@@ -75,6 +88,13 @@ async function run() {
             const result = await productsCollections.insertOne(product);
             res.send(result);
         })
+
+        app.post('/carts', async (req, res) => {
+            const cart = req.body;
+            const result = await cartCollections.insertOne(cart);
+            res.send(result);
+        })
+        //--------------End------------------- POST API ------------------------------
 
         // update api data for product
         app.put('/products/:id', async (req, res) => {
